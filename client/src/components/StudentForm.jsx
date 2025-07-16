@@ -22,7 +22,7 @@ function StudentForm({ onSubmit }) {
     };
 
     return(
-        <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded-xl max-w-md mx-auto">
+        <form onSubmit={handleSubmit} className="bg-gray-800 p-6 shadow-md rounded-xl max-w-md mx-auto">
             <h2 className="text-xl font-semibold mb-4">Add Student</h2>
             <input
             className="w-full p-2 mb-3 border"

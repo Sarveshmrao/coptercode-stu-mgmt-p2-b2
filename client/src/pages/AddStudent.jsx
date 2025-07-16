@@ -13,7 +13,7 @@ function AddStudent() {
 
   return (
     <div>
-      <StudentForm onAdd={handleAdd} />
+      <StudentForm onSubmit={handleAdd} />
     </div>
   );
 }

@@ -25,7 +25,7 @@ function EditStudent() {
   };
   return (
     <div>
-      {student && <StudentForm onAdd={handleUpdate} initialData={student} />}
+      {student && <StudentForm onSubmit={handleUpdate} initialData={student} />}
     </div>
   );
 }

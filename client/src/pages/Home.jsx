@@ -5,14 +5,21 @@ function Home() {
   const [students, setStudents] = useState([]);
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("students")) || [];
-    setStudents(stored);
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/students`)
+      .then((res) => res.json())
+      .then((data) => setStudents(data))
+      .catch((error) => {
+        console.error("Error fetching students:", error);
+        alert("Failed to fetch students. Please try again.");
+      });
   }, []);
 
-  const handleDelete = (id) => {
-    const updated = students.filter((s) => s.id !== id);
-    localStorage.setItem("students", JSON.stringify(updated));
-    setStudents(updated);
+  const handleDelete = async (id) => {
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/students/${id}`, {
+      method: "DELETE",
+    });
+    setStudents((prev) => prev.filter((s) => s._id !== id));
+    alert("Student deleted successfully");
   };
 
   return (
@@ -20,7 +27,9 @@ function Home() {
       {students.length === 0 ? (
         <p>No students added yet.</p>
       ) : (
-        students.map((s) => <StudentCard key={s.id} student={s} onDelete={handleDelete} />)
+        students.map((s) => (
+          <StudentCard key={s._id} student={s} onDelete={handleDelete} />
+        ))
       )}
     </div>
   );

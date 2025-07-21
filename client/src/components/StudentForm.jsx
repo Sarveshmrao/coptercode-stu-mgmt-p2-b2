@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function StudentForm({ onSubmit, initialData }) {
     const [form , setForm] = useState({
@@ -7,7 +8,7 @@ function StudentForm({ onSubmit, initialData }) {
         department: "",
         email: ""
     });
-
+    const navigate = useNavigate();
     useEffect(() => {
        if (initialData) setForm(initialData);
     }, [initialData]);
@@ -16,13 +17,28 @@ function StudentForm({ onSubmit, initialData }) {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if(!form.name || !form.roll) return alert("Name and Roll are required");
-        onSubmit({ ...form, id: initialData?.id || Date.now() });
-        setForm({
-            name: "", roll: "", department: "", email: ""
-        });
+        const method = initialData ? "PUT" : "POST";
+        const url = initialData
+          ? `${import.meta.env.VITE_BACKEND_URL}/api/students/${initialData._id}`
+          : `${import.meta.env.VITE_BACKEND_URL}/api/students`;
+        try {
+          const response = await fetch(url, {
+            method,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(form),
+          });
+          if (response.status === 201 || response.status === 200) {
+            navigate("/");
+          }
+        } catch (error) {
+          console.error("Error submitting form:", error);
+          alert("Failed to submit form. Please try again.");
+        }
     };
 
     return (

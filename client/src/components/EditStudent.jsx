@@ -9,16 +9,24 @@ function EditStudent() {
   const [student, setStudent] = useState(null);
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("students")) || [];
-    const found = stored.find((s) => s.id === parseInt(id));
-    if (!found) return navigate("/");
-    setStudent(found);
-  }, [id, navigate]);
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/students/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch student data");
+        return res.json();
+      })
+      .then((data) => {
+        setStudent(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching student data:", error);
+        alert("Failed to fetch student data. Please try again.");
+      });
+  }, [id]);
 
   const handleUpdate = (updatedStudent) => {
     const stored = JSON.parse(localStorage.getItem("students")) || [];
     const updatedList = stored.map((s) =>
-      s.id === parseInt(id) ? updatedStudent : s
+      s._id === parseInt(id) ? updatedStudent : s
     );
     localStorage.setItem("students", JSON.stringify(updatedList));
     navigate("/");
